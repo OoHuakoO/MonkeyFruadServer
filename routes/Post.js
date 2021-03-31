@@ -1638,4 +1638,11 @@ router.post("/notificationnread/:uid", async (req, res) => {
     console.log(err);
   }
 });
+router.get("/test", async (req, res) => {
+  try {
+    return res.json({ msg: "success" });
+  } catch (err) {
+    console.log(err);
+  }
+});
 module.exports = router;
