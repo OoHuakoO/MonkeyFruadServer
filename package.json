@@ -26,9 +26,7 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "react": "^17.0.1",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
+    "uuid": "^8.3.2",
     "firebase": "^8.2.1"
   },
   "scripts": {
