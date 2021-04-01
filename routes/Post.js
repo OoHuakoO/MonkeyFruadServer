@@ -1569,72 +1569,14 @@ router.post("/report/delete/:uid", async (req, res) => {
   }
 });
 
-router.post("/notificationinit/:postid/:userid", async (req, res) => {
-  try {
-    const postid = req.params.postid;
-    const userid = req.params.userid;
-    console.log(postid)
-    const userCommentData = null;
-    const userPostid = null;
-    const notiID = null;
-    const uid = uuidv4();
-    let date = new Date();
-    await firestore
-      .collection("User")
-      .where("uid", "==", userid)
-      .get()
-      .then((element) => {
-        element.forEach((doc) => {
-          userCommentData = {
-            userid: doc.get("uid"),
-            username: doc.get("username"),
-            photoURL: doc.get("photoURl"),
-          };
-        });
-      });
-    await firestore
-      .collection("Post")
-      .where("uid", "==", postid)
-      .get()
-      .then((element) => {
-        element.forEach((doc) => {
-          userPostid = doc.get("userid");
-        });
-      });
-    await firestore.collection("Notification").doc(uid).set({
-      userComment: userCommentData,
-      read: false,
-      date,
-      postid,
-      uid,
-      userPostid,
-    });
-    await firestore
-      .collection("Notification")
-      .where("userPostid", "==", userPostid)
-      .get()
-      .then((element) => {
-        element.forEach((doc) => {
-          notiID.push(doc.get("uid"));
-        });
-      });
-    await firestore
-      .collection("User")
-      .doc(userPostid)
-      .update({ notification: notiID });
-    return res.json({ msg: "success" });
-  } catch (err) {
-    console.log(err);
-  }
-});
 router.post("/notificationnonread/:postid/:userid", async (req, res) => {
   try {
     const postid = req.params.postid;
     const userid = req.params.userid;
-    const userCommentData = null;
-    const userPostid = null;
-    const notiID = null;
-    const uid = uuidv4();
+    let userCommentData = null;
+    let userPostid = null;
+    let notiID = [];
+    let uid = uuidv4();
     let date = new Date();
     await firestore
       .collection("User")
@@ -1645,7 +1587,7 @@ router.post("/notificationnonread/:postid/:userid", async (req, res) => {
           userCommentData = {
             userid: doc.get("uid"),
             username: doc.get("username"),
-            photoURL: doc.get("photoURl"),
+            photoURL: doc.get("photoURL"),
           };
         });
       });
@@ -1655,12 +1597,13 @@ router.post("/notificationnonread/:postid/:userid", async (req, res) => {
       .get()
       .then((element) => {
         element.forEach((doc) => {
-          userPostid = doc.get("userid");
+          userPostid = doc.get("useruid");
         });
       });
     await firestore.collection("Notification").doc(uid).set({
-      userComment: userCommentData,
+      userCommentData,
       read: false,
+      click: false,
       date,
       postid,
       uid,
@@ -1684,21 +1627,100 @@ router.post("/notificationnonread/:postid/:userid", async (req, res) => {
     console.log(err);
   }
 });
-router.post("/notificationnread/:uid", async (req, res) => {
+router.post("/notificationread/:notiId", async (req, res) => {
   try {
-    const notiID = req.params.uid;
+    const notiId = req.params.notiId;
+    console.log(notiId)
     await firestore
       .collection("Notification")
-      .doc(notiID)
+      .doc(notiId)
       .update({ read: true });
     return res.json({ msg: "success" });
   } catch (err) {
     console.log(err);
   }
 });
-router.get("/test", async (req, res) => {
+router.post("/notichangeclick/:userid", async (req, res) => {
   try {
+    const userid = req.params.userid;
+    const noti = req.body.countNoti;
+    for(i=0;i<noti.length;i++){
+      await firestore
+      .collection("Notification")
+      .doc(noti[i].uid)
+      .update({ click: true });
+    }
     return res.json({ msg: "success" });
+  } catch (err) {
+    console.log(err);
+  }
+});
+router.post("/getnoticlickfalse/:userid", async (req, res) => {
+  try {
+    const userid = req.params.userid;
+    let notiID = [];
+    let notiData = [];
+    const queryData = await firestore
+      .collection("User")
+      .where("uid", "==", userid);
+    await queryData.get().then((element) => {
+      element.forEach((doc) => {
+        notiID.push(doc.get("notification"));
+      });
+    });
+    if (notiID[0] != null || undefined) {
+      for (let i = 0; i < notiID[0].length; i++) {
+        await firestore
+          .collection("Notification")
+          .where("uid", "==", notiID[0][i])
+          .where("click", "==", false)
+          .get()
+          .then((element) => {
+            element.forEach((doc) => {
+              notiData.push(doc.data());
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    }
+    return res.json(notiData);
+  } catch (err) {
+    console.log(err);
+  }
+});
+router.post("/getnotification/:userid", async (req, res) => {
+  try {
+    const userid = req.params.userid;
+    let notiID = [];
+    let notiData = [];
+    const queryData = await firestore
+      .collection("User")
+      .where("uid", "==", userid);
+    await queryData.get().then((element) => {
+      element.forEach((doc) => {
+        notiID.push(doc.get("notification"));
+      });
+    });
+    if (notiID[0] != null || undefined) {
+      for (let i = 0; i < notiID[0].length; i++) {
+        await firestore
+          .collection("Notification")
+          .where("uid", "==", notiID[0][i])
+          .orderBy("date","")
+          .get()
+          .then((element) => {
+            element.forEach((doc) => {
+              notiData.push(doc.data());
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    }
+    return res.json(notiData);
   } catch (err) {
     console.log(err);
   }
