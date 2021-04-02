@@ -14,13 +14,9 @@ const express = require("express"),
  app.use(cors())
  
  app.post('/webhook', (req, res) => {
-   if(req.body.event){
-    let tokenUser = req.body.event[0].replyToken
+  let tokenUser = req.body.events[0].replyToken;
     replyToUser(tokenUser)
-   }
-    res.sendStatus(200)
    
-  
 })
 
 const replyToUser = (tokenUser) => {
@@ -46,6 +42,7 @@ const replyToUser = (tokenUser) => {
     body: body
   }, (err, res, body) => {
     console.log(body);
+    // console.log(err);
   });
 }
 
