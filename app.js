@@ -14,9 +14,36 @@ const express = require("express"),
  app.use(cors())
  
  app.post('/webhook', (req, res) => {
-  console.log("gello")
+  let tokenUser = req.body.events[0].replyToken
+  replyToUser(tokenUser)
   res.sendStatus(200)
 })
+
+const replyToUser = () => {
+  let headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer OmVUWBXZY9gE9N/F6yHHXHIyoh1ahnKIpUOChGZmxqaUfjkucGYO8zRF2OGwPrYYyCxA3WmMQm3ToPt9A8IqgUB3WQT6nUeJTbSnGcDQ/wZRxvJqd5eAXHBQeBu4Mc8PJzQ1ZUHngoPvEFHIkoMlhgdB04t89/1O/w1cDnyilFU='
+}
+    let body = JSON.stringify({
+  replyToken: tokenUser,
+  messages: [{
+      type: 'text',
+      text: 'Hello'
+  },
+  {
+      type: 'text',
+      text: 'How are you?'
+  }]
+  })
+  request.post({
+    url: 'https://api.line.me/v2/bot/message/reply',
+    headers: headers,
+    body: body
+  }, (err, res, body) => {
+    console.log(res);
+  });
+}
+
 // app
 // Set Route
 app.use("/user", userRoutes);
