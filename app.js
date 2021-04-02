@@ -13,7 +13,10 @@ const express = require("express"),
  app.use(express.urlencoded({limit: '50mb' , extended:true }))
  app.use(cors())
  
-
+ app.post('/webhook', (req, res) => {
+  console.log("gello")
+  res.sendStatus(200)
+})
 // app
 // Set Route
 app.use("/user", userRoutes);
