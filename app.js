@@ -18,8 +18,10 @@ const express = require("express"),
     let tokenUser = req.body.event[0].replyToken
     console.log(tokenUser)
     replyToUser(tokenUser)
-    res.sendStatus(200)
+ 
    }
+    res.sendStatus(200)
+   
   
 })
 
