@@ -16,9 +16,7 @@ const express = require("express"),
  app.post('/webhook', (req, res) => {
    if(req.body.event){
     let tokenUser = req.body.event[0].replyToken
-    console.log(tokenUser)
     replyToUser(tokenUser)
- 
    }
     res.sendStatus(200)
    
@@ -26,9 +24,10 @@ const express = require("express"),
 })
 
 const replyToUser = (tokenUser) => {
+  console.log(tokenUser)
   let headers = {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer OmVUWBXZY9gE9N/F6yHHXHIyoh1ahnKIpUOChGZmxqaUfjkucGYO8zRF2OGwPrYYyCxA3WmMQm3ToPt9A8IqgUB3WQT6nUeJTbSnGcDQ/wZRxvJqd5eAXHBQeBu4Mc8PJzQ1ZUHngoPvEFHIkoMlhgdB04t89/1O/w1cDnyilFU='
+    'Authorization': 'Bearer 3f6X573q0fD0AORDQWaZ22z8mJreeV6t/DxWBQ9o1obR5ETV9o6MiD/1FaahCjxmyCxA3WmMQm3ToPt9A8IqgUB3WQT6nUeJTbSnGcDQ/wYVIG2GdaZK05pPlby1YAdCxbSfhKPIN3rPfBFt8fLtDAdB04t89/1O/w1cDnyilFU='
 }
     let body = JSON.stringify({
   replyToken: tokenUser,
@@ -46,7 +45,7 @@ const replyToUser = (tokenUser) => {
     headers: headers,
     body: body
   }, (err, res, body) => {
-    console.log(res);
+    console.log(body);
   });
 }
 
