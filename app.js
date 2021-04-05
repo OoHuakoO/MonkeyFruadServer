@@ -85,12 +85,36 @@ await getDb.get().then(doc => {
   
    item.filter(res => {
    if(res.nameSurnameAccount === message){
-      BotReply = `ชื่อ ${res.data.name} นามสกุล ${res.data.surname} มีประวัติการโกงในระบบ เจี๊ยกก- เลขบัญชี ${res.data.accountnumber} ธนาคาร ${res.data.bank} จำนวนครั้งที่โกง ${res.data.count} ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok`
+      BotReply = 
+      ` ${res.data.name} ${res.data.surname} 
+      มีประวัติการโกงในระบบ 
+      เลขบัญชี ${res.data.accountnumber} 
+      ธนาคาร ${res.data.bank} 
+      จำนวนครั้งที่โกง ${res.data.count} 
+      ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
+      วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
+      https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok`
     }
     else if(res.nameSurname === message){
-      BotReply = `ชื่อ ${res.data.name} นามสกุล ${res.data.surname} มีประวัติการโกงในระบบ เจี๊ยกก- เลขบัญชี ${res.data.accountnumber} ธนาคาร ${res.data.bank} จำนวนครั้งที่โกง ${res.data.count} ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok`
+      BotReply =  
+      ` ${res.data.name} ${res.data.surname} 
+      มีประวัติการโกงในระบบ 
+      เลขบัญชี ${res.data.accountnumber} 
+      ธนาคาร ${res.data.bank} 
+      จำนวนครั้งที่โกง ${res.data.count} 
+      ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
+      วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
+      https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok`
     }else if(res.account === message){
-      BotReply = `ชื่อ ${res.data.name} นามสกุล ${res.data.surname} มีประวัติการโกงในระบบ เจี๊ยกก- เลขบัญชี ${res.data.accountnumber} ธนาคาร ${res.data.bank} จำนวนครั้งที่โกง ${res.data.count} ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok`
+      BotReply =  
+      ` ${res.data.name} ${res.data.surname} 
+      มีประวัติการโกงในระบบ 
+      เลขบัญชี ${res.data.accountnumber} 
+      ธนาคาร ${res.data.bank} 
+      จำนวนครั้งที่โกง ${res.data.count} 
+      ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
+      วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
+      https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok`
     }
   })
   if(BotReply === undefined){
