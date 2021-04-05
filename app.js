@@ -31,46 +31,9 @@ const replyToUser = async(tokenUser,message) => {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer 3f6X573q0fD0AORDQWaZ22z8mJreeV6t/DxWBQ9o1obR5ETV9o6MiD/1FaahCjxmyCxA3WmMQm3ToPt9A8IqgUB3WQT6nUeJTbSnGcDQ/wYVIG2GdaZK05pPlby1YAdCxbSfhKPIN3rPfBFt8fLtDAdB04t89/1O/w1cDnyilFU='
 }
-let BotReply 
-// const getDbWhereName = await firestore.collection("Thief").where("name" , "==" , message)
-
-// await getDbWhereName.get().then(doc => {
-//     if(doc){
-//       doc.forEach(doc2 => {
-//         if(doc2){
-//            BotReply = `ชื่อ${doc2.data().name} นามสกุล${doc2.data().surname} มีประวัติการโกงในระบบ เจี๊ยกก- เลขบัญชี${doc2.data().accountnumber} ธนาคาร ${doc2.data().bank} จำนวนครั้งที่โกง${doc2.data().count}ครั้ง ยอดโกงทั้งหมด ${doc2.data().summoney} บาท วันที่โกงล่าสุด ${moment(new Date(doc2.data().wanteedon.seconds * 1000)).format("lll")}`
-//         }
-//       })
-//     }
-//   })
-//   const getDbWhereSurName = await firestore.collection("Thief").where("surname" , "==" , message)
-//   await getDbWhereSurName.get().then(doc => {
-//     if(doc){
-//       doc.forEach(doc2 => {
-//         if(doc2){
-//            BotReply = `ชื่อ${doc2.data().name} นามสกุล${doc2.data().surname} มีประวัติการโกงในระบบ เจี๊ยกก- เลขบัญชี${doc2.data().accountnumber} ธนาคาร ${doc2.data().bank} จำนวนครั้งที่โกง${doc2.data().count}ครั้ง ยอดโกงทั้งหมด ${doc2.data().summoney} บาท วันที่โกงล่าสุด ${moment(new Date(doc2.data().wanteedon.seconds * 1000)).format("lll")}`
-//         }
-//       })
-//     }
-    
-//   })
-//   const getDbWhereAccountNumber = await firestore.collection("Thief").where("accountnumber" , "==" , message)
-//  await getDbWhereAccountNumber.get().then(doc => {
-//     if(doc){
-//       doc.forEach(doc2 => {
-//         if(doc2){
-//           BotReply = `ชื่อ${doc2.data().name} นามสกุล${doc2.data().surname} มีประวัติการโกงในระบบ เจี๊ยกก- เลขบัญชี${doc2.data().accountnumber} ธนาคาร ${doc2.data().bank} จำนวนครั้งที่โกง${doc2.data().count}ครั้ง ยอดโกงทั้งหมด ${doc2.data().summoney} บาท วันที่โกงล่าสุด ${moment(new Date(doc2.data().wanteedon.seconds * 1000)).format("lll")}`
-//         }
-//       })
-//     }
-//   })
-
-//   if(BotReply === undefined){
-//     BotReply = "ไม่เจอคนร้าย"
-//   }
-
 let item = []
 let textBot
+let BotReply 
 const getDb = await firestore.collection("Thief")
 await getDb.get().then(doc => {
     if(doc){
@@ -86,35 +49,53 @@ await getDb.get().then(doc => {
    item.filter(res => {
    if(res.nameSurnameAccount === message){
       BotReply = 
-      ` ${res.data.name} ${res.data.surname} 
+      `
+      ${res.data.name} ${res.data.surname} 
       มีประวัติการโกงในระบบ 
       เลขบัญชี ${res.data.accountnumber} 
       ธนาคาร ${res.data.bank} 
       จำนวนครั้งที่โกง ${res.data.count} 
       ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
       วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
-      https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok`
+      https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok
+      `
     }
     else if(res.nameSurname === message){
       BotReply =  
-      ` ${res.data.name} ${res.data.surname} 
+      `
+      ${res.data.name} ${res.data.surname} 
       มีประวัติการโกงในระบบ 
       เลขบัญชี ${res.data.accountnumber} 
       ธนาคาร ${res.data.bank} 
       จำนวนครั้งที่โกง ${res.data.count} 
       ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
       วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
-      https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok`
+      https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok
+      `
     }else if(res.account === message){
       BotReply =  
-      ` ${res.data.name} ${res.data.surname} 
+      `
+      ${res.data.name} ${res.data.surname} 
       มีประวัติการโกงในระบบ 
       เลขบัญชี ${res.data.accountnumber} 
       ธนาคาร ${res.data.bank} 
       จำนวนครั้งที่โกง ${res.data.count} 
       ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
       วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
-      https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok`
+      https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}?are%20you%20ok
+      `
+    }else if(message === "ตรวจสอบคนโกง"){
+      BotReply = 
+      `
+      พะโล้สามารถช่วยตรวจสอบความปลอดภัยของคุณได้
+      - ตัวอย่างการพิมพ์ ชื่อ - นามสกุล
+      เช่น สมชาย สายบัว
+
+      - ตัวอย่างการพิมพ์ เลขที่บัญชี
+      เช่น 1234567890
+
+      แล้วพะโล้จะตรวจสอบให้ว่าคนที่คุณต้องการตรวจสอบเคยมีประวัติการโกงหรือไม่
+      `
     }
   })
   if(BotReply === undefined){
