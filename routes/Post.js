@@ -1708,7 +1708,7 @@ router.post("/getnotification/:userid", async (req, res) => {
         await firestore
           .collection("Notification")
           .where("uid", "==", notiID[0][i])
-          .orderBy("date","")
+          .orderBy("date","asc")
           .get()
           .then((element) => {
             element.forEach((doc) => {
