@@ -130,14 +130,44 @@ router.get("/thief", async (req, res) => {
   }
 });
 
+// router.get("/post/:uid", async (req, res) => {
+//   try {
+//     let thiefid = req.params.uid;
+//     console.log(thiefid);
+//     var item = [];
+//     const orderbycount = await firestore
+//       .collection("Post")
+//       .where("accountnumber", "==", thiefid)
+//       .orderBy("date", "desc")
+//       .get()
+//       .then((querySnapshot) => {
+//         querySnapshot.forEach((doc) => {
+//           if (doc.exists) {
+//             item.push(doc.data());
+//           }
+//         });
+//         console.log(item);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//       });
+//     return res.json({
+//       item,
+//     });
+//   } catch (err) {
+//     return res.status(500).json({ msg: err });
+//   }
+// });
+
+
 router.get("/post/:uid", async (req, res) => {
   try {
     let thiefid = req.params.uid;
-    console.log(thiefid);
+    let resultDropDown = []
+    // console.log(thiefid);
     var item = [];
     const orderbycount = await firestore
       .collection("Post")
-      .where("accountnumber", "==", thiefid)
       .orderBy("date", "desc")
       .get()
       .then((querySnapshot) => {
@@ -146,14 +176,20 @@ router.get("/post/:uid", async (req, res) => {
             item.push(doc.data());
           }
         });
-        console.log(item);
       })
       .catch((err) => {
         console.log(err);
       });
-    return res.json({
-      item,
-    });
+      item.filter(result =>{
+        console.log(result)
+       if(result.name + " " + result.surname === thiefid){
+        console.log(result.name + " " + result.surname)
+        resultDropDown.push(result)
+       }
+      })
+      return res.json({
+        item : resultDropDown
+      })
   } catch (err) {
     return res.status(500).json({ msg: err });
   }
