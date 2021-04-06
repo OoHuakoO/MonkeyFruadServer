@@ -1693,33 +1693,16 @@ router.post("/getnoticlickfalse/:userid", async (req, res) => {
 router.post("/getnotification/:userid", async (req, res) => {
   try {
     const userid = req.params.userid;
-    let notiID = [];
     let notiData = [];
     const queryData = await firestore
-      .collection("User")
-      .where("uid", "==", userid);
+      .collection("Notification")
+      .where("userPostid", "==", userid)
+      .orderBy("date","desc")
     await queryData.get().then((element) => {
       element.forEach((doc) => {
-        notiID.push(doc.get("notification"));
+        notiData.push(doc.data());
       });
     });
-    if (notiID[0] != null || undefined) {
-      for (let i = 0; i < notiID[0].length; i++) {
-        await firestore
-          .collection("Notification")
-          .where("uid", "==", notiID[0][i])
-          .orderBy("date","")
-          .get()
-          .then((element) => {
-            element.forEach((doc) => {
-              notiData.push(doc.data());
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    }
     return res.json(notiData);
   } catch (err) {
     console.log(err);
