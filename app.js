@@ -45,10 +45,12 @@ await getDb.get().then(doc => {
       })
     }
   })
-  
    item.filter(res => {
-    if(message.startWith("+")){
-   if(res.nameSurnameAccount === message){
+    if(message.startsWith("+")){
+      
+      let url = `https://monkeyfruad-54aff.web.app/thief/post/${res.data.name}%20${res.data.surname}`
+   if("+" + res.nameSurnameAccount === message){
+  
       BotReply = 
 `${res.data.name} ${res.data.surname} 
 มีประวัติการโกงในระบบ 
@@ -57,30 +59,31 @@ await getDb.get().then(doc => {
 จำนวนครั้งที่โกง ${res.data.count} 
 ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
 วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
-https://monkeyfruad-54aff.web.app/thief/post/${res.data.name} ${res.data.surname}`
+
+${url}`
     }
-    else if(res.nameSurname === message){
+    else if("+" + res.nameSurname === message){
       BotReply =  
 `${res.data.name} ${res.data.surname} 
 มีประวัติการโกงในระบบ 
 วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
-https://monkeyfruad-54aff.web.app/thief/post/${res.data.name} ${res.data.surname}`
-    }else if(res.account === message){
+${url}`
+    }else if("+" + res.account === message){
       console.log(moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll"))
       BotReply =  
 `เลขบัญชี ${res.data.accountnumber}
 มีประวัติการโกงในระบบ  
 วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
-https://monkeyfruad-54aff.web.app/thief/post/${res.data.name} ${res.data.surname}`
+${url}`
   }
   if(BotReply === undefined){
+    let messageReply = message.replace("+","")
       BotReply = 
-`${message} 
+`${messageReply} 
 ไม่มีประวัติการโกงในระบบ`
   }
 }
   })
-
 
   if(message === "ตรวจสอบคนโกง"){
     BotReply = 
