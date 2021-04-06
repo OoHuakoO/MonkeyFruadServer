@@ -164,7 +164,7 @@ router.get("/post/:uid", async (req, res) => {
   try {
     let thiefid = req.params.uid;
     let resultDropDown = []
-    // console.log(thiefid);
+    console.log(thiefid);
     var item = [];
     const orderbycount = await firestore
       .collection("Post")
@@ -181,7 +181,6 @@ router.get("/post/:uid", async (req, res) => {
         console.log(err);
       });
       item.filter(result =>{
-        console.log(result)
        if(result.name + " " + result.surname === thiefid){
         console.log(result.name + " " + result.surname)
         resultDropDown.push(result)
