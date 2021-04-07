@@ -183,7 +183,7 @@ router.post("/remember", function (req, res) {
 
 router.post("/session", async function (req, res) {
   const { user } = req.body;
- await firestore
+  firestore
     .collection("User")
     .doc(user.uid)
     .get()
