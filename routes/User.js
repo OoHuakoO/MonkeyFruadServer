@@ -181,7 +181,7 @@ router.post("/remember", function (req, res) {
   res.json({ success: true });
 });
 
-router.post("/session", async function (req, res) {
+router.post("/session", function (req, res) {
   const { user } = req.body;
   firestore
     .collection("User")
