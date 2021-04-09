@@ -1663,14 +1663,14 @@ router.post("/getnoticlickfalse/:userid", async (req, res) => {
     const queryData =  firestore
       .collection("User")
       .where("uid", "==", userid);
-    queryData.get().then((element) => {
+  await  queryData.get().then((element) => {
       element.forEach((doc) => {
         notiID.push(doc.get("notification"));
       });
     });
     if (notiID[0] != null || undefined) {
       for (let i = 0; i < notiID[0].length; i++) {
-        firestore
+     await   firestore
           .collection("Notification")
           .where("uid", "==", notiID[0][i])
           .where("click", "==", false)
