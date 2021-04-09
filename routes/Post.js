@@ -1600,28 +1600,30 @@ router.post("/notificationnonread/:postid/:userid", async (req, res) => {
           userPostid = doc.get("useruid");
         });
       });
-    await firestore.collection("Notification").doc(uid).set({
-      userCommentData,
-      read: false,
-      click: false,
-      date,
-      postid,
-      uid,
-      userPostid,
-    });
-    await firestore
-      .collection("Notification")
-      .where("userPostid", "==", userPostid)
-      .get()
-      .then((element) => {
-        element.forEach((doc) => {
-          notiID.push(doc.get("uid"));
-        });
+    if (userPostid !== userCommentData.userid) {
+      await firestore.collection("Notification").doc(uid).set({
+        userCommentData,
+        read: false,
+        click: false,
+        date,
+        postid,
+        uid,
+        userPostid,
       });
-    await firestore
-      .collection("User")
-      .doc(userPostid)
-      .update({ notification: notiID });
+      await firestore
+        .collection("Notification")
+        .where("userPostid", "==", userPostid)
+        .get()
+        .then((element) => {
+          element.forEach((doc) => {
+            notiID.push(doc.get("uid"));
+          });
+        });
+      await firestore
+        .collection("User")
+        .doc(userPostid)
+        .update({ notification: notiID });
+    }
     return res.json({ msg: "success" });
   } catch (err) {
     console.log(err);
@@ -1630,7 +1632,7 @@ router.post("/notificationnonread/:postid/:userid", async (req, res) => {
 router.post("/notificationread/:notiId", async (req, res) => {
   try {
     const notiId = req.params.notiId;
-    console.log(notiId)
+    console.log(notiId);
     await firestore
       .collection("Notification")
       .doc(notiId)
@@ -1644,11 +1646,11 @@ router.post("/notichangeclick/:userid", async (req, res) => {
   try {
     const userid = req.params.userid;
     const noti = req.body.countNoti;
-    for(i=0;i<noti.length;i++){
+    for (i = 0; i < noti.length; i++) {
       await firestore
-      .collection("Notification")
-      .doc(noti[i].uid)
-      .update({ click: true });
+        .collection("Notification")
+        .doc(noti[i].uid)
+        .update({ click: true });
     }
     return res.json({ msg: "success" });
   } catch (err) {
@@ -1660,17 +1662,15 @@ router.post("/getnoticlickfalse/:userid", async (req, res) => {
     const userid = req.params.userid;
     let notiID = [];
     let notiData = [];
-    const queryData =  firestore
-      .collection("User")
-      .where("uid", "==", userid);
-  await  queryData.get().then((element) => {
+    const queryData = firestore.collection("User").where("uid", "==", userid);
+    await queryData.get().then((element) => {
       element.forEach((doc) => {
         notiID.push(doc.get("notification"));
       });
     });
     if (notiID[0] != null || undefined) {
       for (let i = 0; i < notiID[0].length; i++) {
-     await   firestore
+        await firestore
           .collection("Notification")
           .where("uid", "==", notiID[0][i])
           .where("click", "==", false)
@@ -1697,7 +1697,7 @@ router.post("/getnotification/:userid", async (req, res) => {
     const queryData = await firestore
       .collection("Notification")
       .where("userPostid", "==", userid)
-      .orderBy("date","desc")
+      .orderBy("date", "desc");
     await queryData.get().then((element) => {
       element.forEach((doc) => {
         notiData.push(doc.data());
