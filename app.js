@@ -54,7 +54,7 @@ await getDb.get().then(doc => {
       BotReply = 
 `${res.data.name} ${res.data.surname} 
 มีประวัติการโกงในระบบ 
-เลขบัญชี ${res.data.accountnumber} 
+เลขที่บัญชี ${res.data.accountnumber} 
 ธนาคาร ${res.data.bank} 
 จำนวนครั้งที่โกง ${res.data.count} 
 ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
@@ -71,7 +71,7 @@ ${url}`
     }else if("+" + res.account === message){
       console.log(moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll"))
       BotReply =  
-`เลขบัญชี ${res.data.accountnumber}
+`เลขที่บัญชี ${res.data.accountnumber}
 มีประวัติการโกงในระบบ  
 วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
 ${url}`
@@ -89,7 +89,7 @@ ${url}`
     BotReply = 
 `พะโล้สามารถช่วยตรวจสอบความปลอดภัยของคุณได้
 
-โดยก่อนการพิมพ์ชื่อ-นามสกุล หรือเลขบัญชีต้องใส่ "+" ข้างหน้า
+โดยการพิมพ์ ชื่อ-นามสกุล หรือเลขที่บัญชีของคนที่ต้องการตรวจสอบ และจะต้องใส่ "+" ข้างหน้าเสมอ
 
 - ตัวอย่างการพิมพ์ ชื่อ-นามสกุล
 เช่น +สมชาย สายบัว
