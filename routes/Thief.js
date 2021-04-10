@@ -134,9 +134,12 @@ router.get("/thief", async (req, res) => {
 router.get("/post/:uid", async (req, res) => {
   try {
     let thiefid = req.params.uid;
+    console.log(thiefid)
     let resultDropDown = []
     var item = [];
-    const orderbycount = await firestore
+    if(thiefid.match(/[0-9]/g)){
+      console.log("number")
+      const orderbycount = await firestore
       .collection("Post")
       .orderBy("date", "desc")
       .get()
@@ -150,7 +153,30 @@ router.get("/post/:uid", async (req, res) => {
       .catch((err) => {
         console.log(err);
       });
-      console.log(item)
+      item.filter(result =>{
+       if((result.accountnumber) === thiefid){
+        resultDropDown.push(result)
+       }
+      })
+      return res.json({
+        item : resultDropDown
+      })
+    }else {
+      console.log("name surname")
+      const orderbycount = await firestore
+      .collection("Post")
+      .orderBy("date", "desc")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          if (doc.exists) {
+            item.push(doc.data());
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
       item.filter(result =>{
        if((result.name + " " + result.surname) === thiefid){
         console.log(result.name + " " + result.surname)
@@ -161,6 +187,8 @@ router.get("/post/:uid", async (req, res) => {
       return res.json({
         item : resultDropDown
       })
+    }
+
   } catch (err) {
     return res.status(500).json({ msg: err });
   }
