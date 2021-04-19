@@ -7,7 +7,7 @@ const { auth, firestore } = require("../models/index"),
   { Result } = require("express-validator"),
   cloudinary = require("../utils/cloudinary"),
   path = require("path");
-
+var date = new Date();
 const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(
@@ -97,6 +97,7 @@ router.post("/signup", async (req, res) => {
                 phone: phone,
                 province: province,
                 role: "user",
+                date: date,
               });
               return res.json({ user: result, usernameExist: usernameExist });
             }
@@ -132,6 +133,7 @@ router.post("/googlesignup", function (req, res) {
             sex: "-",
             phone: "-",
             province: "-",
+            date: date,
           });
           return res.json({ msg: "google signup success" });
         } else {
@@ -163,6 +165,7 @@ router.post("/facebooksignup", function (req, res) {
             sex: "-",
             phone: "-",
             province: "-",
+            date: date,
           });
           return res.json({ msg: "facebook signup success" });
         } else {
@@ -359,7 +362,6 @@ router.get("/profile/:uid", async (req, res) => {
   }
 });
 
-
 router.get("/session/:uid", async (req, res) => {
   try {
     let getid = req.params.uid;
@@ -379,5 +381,22 @@ router.get("/session/:uid", async (req, res) => {
     return res.status(500).json({ msg: err });
   }
 });
+router.get("/user", async (req, res) => {
+  try {
+    const Userdetail = await firestore
+      .collection("User")
+      .where("date", "==", getid)
+      .get();
+    Userdetail.forEach((doc) => {
+      let item = [];
+      item.push(doc.data());
 
+      return res.json({
+        item,
+      });
+    });
+  } catch (err) {
+    return res.status(500).json({ msg: err });
+  }
+});
 module.exports = router;
