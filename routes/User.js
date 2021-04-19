@@ -7,7 +7,6 @@ const { auth, firestore } = require("../models/index"),
   { Result } = require("express-validator"),
   cloudinary = require("../utils/cloudinary"),
   path = require("path");
-var date = new Date();
 const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(
@@ -50,6 +49,7 @@ const uploadFile = (req, res, next) => {
 
 router.post("/signup", async (req, res) => {
   var usernameExist = false;
+  var date = new Date();
   var item = [];
   const {
     firstname,
@@ -80,7 +80,6 @@ router.post("/signup", async (req, res) => {
         item.push(doc.data());
       });
       if (item[0] === undefined) {
-        console.log("OK");
         auth
           .createUserWithEmailAndPassword(email, password)
           .then((result) => {
@@ -118,7 +117,7 @@ router.post("/signup", async (req, res) => {
 router.post("/googlesignup", function (req, res) {
   try {
     const { result } = req.body;
-
+    var date = new Date();
     if (result) {
       const userRef = firestore.collection("User").doc(result.user.uid);
       userRef.get().then((doc) => {
@@ -151,6 +150,7 @@ router.post("/googlesignup", function (req, res) {
 router.post("/facebooksignup", function (req, res) {
   try {
     const { result } = req.body;
+    var date = new Date();
     if (result) {
       const userRef = firestore.collection("User").doc(result.user.uid);
       userRef.get().then((doc) => {
@@ -381,22 +381,24 @@ router.get("/session/:uid", async (req, res) => {
     return res.status(500).json({ msg: err });
   }
 });
-router.get("/user", async (req, res) => {
+router.get("/listuserofday", async (req, res) => {
   try {
-    const Userdetail = await firestore
+    var data = [];
+    var last6day = new Date(Date.now() - (6 * 24 * 60 * 60 * 1000))
+    const listUser = await firestore
       .collection("User")
-      .where("date", "==", getid)
+      .where("date", ">=", last6day)
+      .where("date", "<=", date)
+      .orderBy("date", "desc")
       .get();
-    Userdetail.forEach((doc) => {
-      let item = [];
-      item.push(doc.data());
-
-      return res.json({
-        item,
-      });
+    listUser.forEach((doc) => {
+      data.push(doc.data());
+    });
+    return res.json({
+      data,
     });
   } catch (err) {
-    return res.status(500).json({ msg: err });
+    return console.log(err);
   }
 });
 module.exports = router;
