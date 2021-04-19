@@ -384,12 +384,55 @@ router.get("/session/:uid", async (req, res) => {
 router.get("/listuserofday", async (req, res) => {
   try {
     var data = [];
+    var date = new Date();
     var last6day = new Date(Date.now() - (6 * 24 * 60 * 60 * 1000))
     const listUser = await firestore
       .collection("User")
       .where("date", ">=", last6day)
       .where("date", "<=", date)
-      .orderBy("date", "desc")
+      .orderBy("date", "asc")
+      .get();
+    listUser.forEach((doc) => {
+      data.push(doc.data());
+    });
+    return res.json({
+      data,
+    });
+  } catch (err) {
+    return console.log(err);
+  }
+});
+router.get("/listuserofmonth", async (req, res) => {
+  try {
+    var data = [];
+    var date = new Date();
+    var last29day = new Date(Date.now() - (29 * 24 * 60 * 60 * 1000))
+    const listUser = await firestore
+      .collection("User")
+      .where("date", ">=", last29day)
+      .where("date", "<=", date)
+      .orderBy("date", "asc")
+      .get();
+    listUser.forEach((doc) => {
+      data.push(doc.data());
+    });
+    return res.json({
+      data,
+    });
+  } catch (err) {
+    return console.log(err);
+  }
+});
+router.get("/listuserofyear", async (req, res) => {
+  try {
+    var data = [];
+    var date = new Date();
+    var last29day = new Date(Date.now() - (29 * 24 * 60 * 60 * 1000))
+    const listUser = await firestore
+      .collection("User")
+      .where("date", ">=", last29day)
+      .where("date", "<=", date)
+      .orderBy("date", "asc")
       .get();
     listUser.forEach((doc) => {
       data.push(doc.data());
