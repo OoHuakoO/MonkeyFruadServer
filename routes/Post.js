@@ -1584,11 +1584,18 @@ router.post("/notificationnonread/:postid/:userid", async (req, res) => {
       .get()
       .then((element) => {
         element.forEach((doc) => {
-          userCommentData = {
-            userid: doc.get("uid"),
-            username: doc.get("username"),
-            photoURL: doc.get("photoURL"),
-          };
+          if (doc.get("photoURL") !== undefined) {
+            userCommentData = {
+              userid: doc.get("uid"),
+              username: doc.get("username"),
+              photoURL: doc.get("photoURL"),
+            };
+          } else if (doc.get("photoURL") === undefined) {
+            userCommentData = {
+              userid: doc.get("uid"),
+              username: doc.get("username"),
+            };
+          }
         });
       });
     await firestore
