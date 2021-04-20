@@ -1719,14 +1719,14 @@ router.get("/listpostofday", async (req, res) => {
   try {
     var data = [];
     var date = new Date();
-    var last29day = new Date(Date.now() - (6 * 24 * 60 * 60 * 1000))
-    const listUser = await firestore
+    var last6day = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
+    const listPost = await firestore
       .collection("Post")
-      .where("date", ">=", last29day)
+      .where("date", ">=", last6day)
       .where("date", "<=", date)
       .orderBy("date", "asc")
       .get();
-    listUser.forEach((doc) => {
+      listPost.forEach((doc) => {
       data.push(doc.data());
     });
     return res.json({
@@ -1740,18 +1740,77 @@ router.get("/listpostofmonth", async (req, res) => {
   try {
     var data = [];
     var date = new Date();
-    var last29day = new Date(Date.now() - (29 * 24 * 60 * 60 * 1000))
-    const listUser = await firestore
+    var last29day = new Date(Date.now() - 29 * 24 * 60 * 60 * 1000);
+    const listPost = await firestore
       .collection("Post")
       .where("date", ">=", last29day)
       .where("date", "<=", date)
       .orderBy("date", "asc")
       .get();
-    listUser.forEach((doc) => {
+      listPost.forEach((doc) => {
       data.push(doc.data());
     });
     return res.json({
       data,
+    });
+  } catch (err) {
+    return console.log(err);
+  }
+});
+router.get("/listsearchofday", async (req, res) => {
+  try {
+    var data = [];
+    var date = new Date();
+    var last6day = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
+    const listSearch = await firestore
+      .collection("Search")
+      .where("date", ">=", last6day)
+      .where("date", "<=", date)
+      .orderBy("date", "asc")
+      .get();
+      listSearch.forEach((doc) => {
+      data.push(doc.data());
+    });
+    return res.json({
+      data,
+    });
+  } catch (err) {
+    return console.log(err);
+  }
+});
+router.get("/listsearchofmonth", async (req, res) => {
+  try {
+    var data = [];
+    var date = new Date();
+    var last29day = new Date(Date.now() - 29 * 24 * 60 * 60 * 1000);
+    const listSearch = await firestore
+      .collection("Search")
+      .where("date", ">=", last29day)
+      .where("date", "<=", date)
+      .orderBy("date", "asc")
+      .get();
+    listSearch.forEach((doc) => {
+      data.push(doc.data());
+    });
+    return res.json({
+      data,
+    });
+  } catch (err) {
+    return console.log(err);
+  }
+});
+router.post("/search", async (req, res) => {
+  try {
+    const textSearch = req.body.search;
+    const uid = uuidv4();
+    var date = new Date();
+    await firestore.collection("Search").doc(uid).set({
+      uid: uid,
+      textSearch: textSearch,
+      date: date,
+    });
+    return res.json({
+      msg: "success",
     });
   } catch (err) {
     return console.log(err);
