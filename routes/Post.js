@@ -1076,7 +1076,6 @@ router.get("/post", async (req, res) => {
     return res.status(500).json({ msg: err });
   }
 });
-
 router.get("/postforfindthief", async (req, res) => {
   try {
     console.log("ok");
@@ -1757,6 +1756,23 @@ router.get("/listpostofmonth", async (req, res) => {
     return console.log(err);
   }
 });
+router.get("/listpostofyear", async (req, res) => {
+  try {
+    const showdata = await firestore.collection("Post").orderBy("date", "asc");
+    showdata.get().then((ok) => {
+      let data = [];
+      ok.forEach((doc) => {
+        data.push(doc.data());
+      });
+      return res.json({
+        data,
+      });
+    });
+  } catch (err) {
+    return res.status(500).json({ msg: err });
+  }
+});
+
 router.get("/listsearchofday", async (req, res) => {
   try {
     var data = [];
@@ -1797,6 +1813,22 @@ router.get("/listsearchofmonth", async (req, res) => {
     });
   } catch (err) {
     return console.log(err);
+  }
+});
+router.get("/listsearchofyear", async (req, res) => {
+  try {
+    const showdata = await firestore.collection("Search").orderBy("date", "asc");
+    showdata.get().then((ok) => {
+      let data = [];
+      ok.forEach((doc) => {
+        data.push(doc.data());
+      });
+      return res.json({
+        data,
+      });
+    });
+  } catch (err) {
+    return res.status(500).json({ msg: err });
   }
 });
 router.post("/search", async (req, res) => {
@@ -1856,6 +1888,22 @@ router.get("/listreportofmonth", async (req, res) => {
     });
   } catch (err) {
     return console.log(err);
+  }
+});
+router.get("/listreportofyear", async (req, res) => {
+  try {
+    const showdata = await firestore.collection("Report").orderBy("date", "asc");
+    showdata.get().then((ok) => {
+      let data = [];
+      ok.forEach((doc) => {
+        data.push(doc.data());
+      });
+      return res.json({
+        data,
+      });
+    });
+  } catch (err) {
+    return res.status(500).json({ msg: err });
   }
 });
 module.exports = router;

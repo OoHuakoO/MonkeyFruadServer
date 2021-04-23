@@ -425,23 +425,18 @@ router.get("/listuserofmonth", async (req, res) => {
 });
 router.get("/listuserofyear", async (req, res) => {
   try {
-    var data = [];
-    var date = new Date();
-    var last29day = new Date(Date.now() - (29 * 24 * 60 * 60 * 1000))
-    const listUser = await firestore
-      .collection("User")
-      .where("date", ">=", last29day)
-      .where("date", "<=", date)
-      .orderBy("date", "asc")
-      .get();
-    listUser.forEach((doc) => {
-      data.push(doc.data());
-    });
-    return res.json({
-      data,
+    const showdata = await firestore.collection("User").orderBy("date", "asc");
+    showdata.get().then((ok) => {
+      let data = [];
+      ok.forEach((doc) => {
+        data.push(doc.data());
+      });
+      return res.json({
+        data,
+      });
     });
   } catch (err) {
-    return console.log(err);
+    return res.status(500).json({ msg: err });
   }
 });
 module.exports = router;
