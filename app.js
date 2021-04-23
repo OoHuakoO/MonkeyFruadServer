@@ -178,6 +178,7 @@ let textBot
 let BotReply = []
 let final = []
 let i = 0
+let setTrueFalse = true
 const getDb = await firestore.collection("Thief").orderBy("wanteedon","desc")
 await getDb.get().then(doc => {
     if(doc){
@@ -198,7 +199,9 @@ await getDb.get().then(doc => {
 }
   else {
     item.filter(res => {
-
+      if(message === "+" + res.nameSurnameAccount || message === "+" + res.nameSurname || message === "+" + res.account){
+        setTrueFalse = false
+      }
     if(message.startsWith("+")){
       
       let urlName = `https://monkeyfruad-54aff.web.app/thief/post/${res.data.name}%20${res.data.surname}`
@@ -234,8 +237,6 @@ ${urlName}`
 ${urlAccountNumber}`
 })
       }
-
-
 
 }
 
@@ -282,11 +283,11 @@ ${urlAccountNumber}`
     i ++ 
   })
   console.log(final.length)
- 
+
     let body = JSON.stringify({
       replyToken: tokenUser,
-      messages: [{type : "text",text : "ไม่พบคนร้ายในระบบ พะโล้จึงคัด 4 รายชื่อที่ใกล้เคียงมาให้คุณดู"},...final
-      ]
+      messages: [setTrueFalse && {type : "text",text : 
+`ไม่พบคนร้ายในระบบ พะโล้จึงคัด ${final.length} รายชื่อที่ใกล้เคียงมาให้คุณดู`},...final]
       })
       request.post({
         url: 'https://api.line.me/v2/bot/message/reply',
