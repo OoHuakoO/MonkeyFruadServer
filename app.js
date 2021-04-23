@@ -192,6 +192,7 @@ await getDb.get().then(doc => {
   })
 
   if(message === "+"){
+    setTrueFalse = false
     BotReply.push({type : "text", text : 
 `${message} 
 ไม่มีประวัติการโกงในระบบ`}
@@ -247,7 +248,7 @@ ${urlAccountNumber}`
   }
 
   if(message.startsWith("+")){
- 
+    setTrueFalse = false
      if(BotReply.length === 0){
       let messageReply = message.replace("+","")
       BotReply.push({type : "text", text : 
@@ -258,7 +259,7 @@ ${urlAccountNumber}`
   }
 
   if(message === "ตรวจสอบคนโกง"){
-
+    setTrueFalse = false
     BotReply.push({type : "text" , text : 
 `พะโล้สามารถช่วยตรวจสอบความปลอดภัยของคุณได้
 
@@ -276,7 +277,7 @@ ${urlAccountNumber}`
 
 
   if(BotReply.length === 0){
-   
+    setTrueFalse = false
       BotReply.push({type : "text" , text : "พะโล้ไม่เข้าใจ พูดใหม่ได้มั้ย เจี๊ยก-"})
   }
 
