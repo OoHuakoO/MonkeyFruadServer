@@ -48,7 +48,8 @@ await getDb.get().then(doc => {
    item.filter(res => {
     if(message.startsWith("+")){
       
-      let url = `https://monkeyfruad-54aff.web.app/thief/post/${res.data.name}%20${res.data.surname}`
+      let urlName = `https://monkeyfruad-54aff.web.app/thief/post/${res.data.name}%20${res.data.surname}`
+      let urlAccountNumber = `https://monkeyfruad-54aff.web.app/thief/post/${res.accountnumber}`
    if("+" + res.nameSurnameAccount === message){
   
       BotReply = 
@@ -60,21 +61,21 @@ await getDb.get().then(doc => {
 ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
 วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
 
-${url}`
+${urlName}`
     }
     else if("+" + res.nameSurname === message){
       BotReply =  
 `${res.data.name} ${res.data.surname} 
 มีประวัติการโกงในระบบ 
 วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
-${url}`
+${urlName}`
     }else if("+" + res.account === message){
       console.log(moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll"))
       BotReply =  
 `เลขที่บัญชี ${res.data.accountnumber}
 มีประวัติการโกงในระบบ  
 วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")} 
-${url}`
+${urlAccountNumber}`
   }
   if(BotReply === undefined){
     let messageReply = message.replace("+","")
