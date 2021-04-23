@@ -176,6 +176,8 @@ const replyToUser = async(tokenUser,message) => {
 let item = []
 let textBot
 let BotReply = []
+let final = []
+let i = 0
 const getDb = await firestore.collection("Thief").orderBy("wanteedon","desc")
 await getDb.get().then(doc => {
     if(doc){
@@ -187,13 +189,22 @@ await getDb.get().then(doc => {
       })
     }
   })
-   item.filter(res => {
+
+  if(message === "+"){
+    BotReply.push({type : "text", text : 
+`${message} 
+ไม่มีประวัติการโกงในระบบ`}
+)
+}
+  else {
+    item.filter(res => {
+
     if(message.startsWith("+")){
       
       let urlName = `https://monkeyfruad-54aff.web.app/thief/post/${res.data.name}%20${res.data.surname}`
       let urlAccountNumber = `https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}`
 
-    if(("+" + res.nameSurnameAccount).startsWith(message.toLowerCase())){
+      if(("+" + res.nameSurnameAccount).startsWith(message.toLowerCase())){
       BotReply.push({type : "text", text :
       `${res.data.name} ${res.data.surname} 
       มีประวัติการโกงในระบบ 
@@ -224,19 +235,25 @@ ${urlAccountNumber}`
 })
       }
 
-  if(BotReply.length === 0){
-    let messageReply = message.replace("+","")
-    BotReply.push({type : "text", text : 
-`${messageReply} 
-ไม่มีประวัติการโกงในระบบ`
-  })
-}
+
+
 }
 
   })
+  }
+
+  if(message.startsWith("+")){
+     if(BotReply.length === 0){
+      let messageReply = message.replace("+","")
+      BotReply.push({type : "text", text : 
+  `${messageReply} 
+  ไม่มีประวัติการโกงในระบบ`
+    })
+  }
+  }
 
   if(message === "ตรวจสอบคนโกง"){
-    BotReply = 
+    BotReply.push({type : "text" , text : 
 `พะโล้สามารถช่วยตรวจสอบความปลอดภัยของคุณได้
 
 โดยการพิมพ์ ชื่อ-นามสกุล หรือเลขที่บัญชีของคนที่ต้องการตรวจสอบ และจะต้องใส่ "+" ข้างหน้าเสมอ
@@ -248,34 +265,27 @@ ${urlAccountNumber}`
 เช่น +1234567890
 
 แล้วพะโล้จะตรวจสอบให้ว่าคนที่คุณต้องการตรวจสอบเคยมีประวัติการโกงหรือไม่`
+})
+}
+
+
+  if(BotReply.length === 0){
+      BotReply.push({type : "text" , text : "พะโล้ไม่เข้าใจ พูดใหม่ได้มั้ย เจี๊ยก-"})
   }
 
-
-  if(BotReply === undefined){
-      BotReply = "พะโล้ไม่เข้าใจ พูดใหม่ได้มั้ย เจี๊ยก-"
-  }
-
-  console.log(BotReply)
-  // console.log(item)
   
+
+  BotReply.map((ok) => {
+    if(i < 4){
+      final.push(ok)
+    }
+    i ++ 
+  })
+  console.log(final.length)
+ 
     let body = JSON.stringify({
       replyToken: tokenUser,
-      messages: [
-        {type : "text",
-        text : "1"
-      },
-      {type : "text",
-      text : "2"
-    },
-    {type : "text",
-    text : "3"
-  },
-  {type : "text",
-  text : "4"
-},
-{type : "text",
-text : "5"
-},
+      messages: [{type : "text",text : "ไม่พบคนร้ายในระบบ พะโล้จึงคัด 4 รายชื่อที่ใกล้เคียงมาให้คุณดู"},...final
       ]
       })
       request.post({
