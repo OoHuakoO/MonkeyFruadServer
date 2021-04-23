@@ -49,7 +49,7 @@ await getDb.get().then(doc => {
     if(message.startsWith("+")){
       
       let urlName = `https://monkeyfruad-54aff.web.app/thief/post/${res.data.name}%20${res.data.surname}`
-      let urlAccountNumber = `https://monkeyfruad-54aff.web.app/thief/post/${res.accountnumber}`
+      let urlAccountNumber = `https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}`
    if("+" + res.nameSurnameAccount === message){
   
       BotReply = 
