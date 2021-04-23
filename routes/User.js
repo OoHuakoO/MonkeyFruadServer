@@ -7,7 +7,6 @@ const { auth, firestore } = require("../models/index"),
   { Result } = require("express-validator"),
   cloudinary = require("../utils/cloudinary"),
   path = require("path");
-
 const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(
@@ -50,6 +49,7 @@ const uploadFile = (req, res, next) => {
 
 router.post("/signup", async (req, res) => {
   var usernameExist = false;
+  var date = new Date();
   var item = [];
   const {
     firstname,
@@ -80,7 +80,6 @@ router.post("/signup", async (req, res) => {
         item.push(doc.data());
       });
       if (item[0] === undefined) {
-        console.log("OK");
         auth
           .createUserWithEmailAndPassword(email, password)
           .then((result) => {
@@ -97,6 +96,7 @@ router.post("/signup", async (req, res) => {
                 phone: phone,
                 province: province,
                 role: "user",
+                date: date,
               });
               return res.json({ user: result, usernameExist: usernameExist });
             }
@@ -117,7 +117,7 @@ router.post("/signup", async (req, res) => {
 router.post("/googlesignup", function (req, res) {
   try {
     const { result } = req.body;
-
+    var date = new Date();
     if (result) {
       const userRef = firestore.collection("User").doc(result.user.uid);
       userRef.get().then((doc) => {
@@ -132,6 +132,7 @@ router.post("/googlesignup", function (req, res) {
             sex: "-",
             phone: "-",
             province: "-",
+            date: date,
           });
           return res.json({ msg: "google signup success" });
         } else {
@@ -149,6 +150,7 @@ router.post("/googlesignup", function (req, res) {
 router.post("/facebooksignup", function (req, res) {
   try {
     const { result } = req.body;
+    var date = new Date();
     if (result) {
       const userRef = firestore.collection("User").doc(result.user.uid);
       userRef.get().then((doc) => {
@@ -163,6 +165,7 @@ router.post("/facebooksignup", function (req, res) {
             sex: "-",
             phone: "-",
             province: "-",
+            date: date,
           });
           return res.json({ msg: "facebook signup success" });
         } else {
@@ -359,7 +362,6 @@ router.get("/profile/:uid", async (req, res) => {
   }
 });
 
-
 router.get("/session/:uid", async (req, res) => {
   try {
     let getid = req.params.uid;
@@ -379,5 +381,62 @@ router.get("/session/:uid", async (req, res) => {
     return res.status(500).json({ msg: err });
   }
 });
-
+router.get("/listuserofday", async (req, res) => {
+  try {
+    var data = [];
+    var date = new Date();
+    var last6day = new Date(Date.now() - (6 * 24 * 60 * 60 * 1000))
+    const listUser = await firestore
+      .collection("User")
+      .where("date", ">=", last6day)
+      .where("date", "<=", date)
+      .orderBy("date", "asc")
+      .get();
+    listUser.forEach((doc) => {
+      data.push(doc.data());
+    });
+    return res.json({
+      data,
+    });
+  } catch (err) {
+    return console.log(err);
+  }
+});
+router.get("/listuserofmonth", async (req, res) => {
+  try {
+    var data = [];
+    var date = new Date();
+    var last29day = new Date(Date.now() - (29 * 24 * 60 * 60 * 1000))
+    const listUser = await firestore
+      .collection("User")
+      .where("date", ">=", last29day)
+      .where("date", "<=", date)
+      .orderBy("date", "asc")
+      .get();
+    listUser.forEach((doc) => {
+      data.push(doc.data());
+    });
+    return res.json({
+      data,
+    });
+  } catch (err) {
+    return console.log(err);
+  }
+});
+router.get("/listuserofyear", async (req, res) => {
+  try {
+    const showdata = await firestore.collection("User").orderBy("date", "asc");
+    showdata.get().then((ok) => {
+      let data = [];
+      ok.forEach((doc) => {
+        data.push(doc.data());
+      });
+      return res.json({
+        data,
+      });
+    });
+  } catch (err) {
+    return res.status(500).json({ msg: err });
+  }
+});
 module.exports = router;
