@@ -260,7 +260,22 @@ ${urlAccountNumber}`
   
     let body = JSON.stringify({
       replyToken: tokenUser,
-      messages: [...BotReply
+      messages: [
+        {type : "text",
+        text : "1"
+      },
+      {type : "text",
+      text : "2"
+    },
+    {type : "text",
+    text : "3"
+  },
+  {type : "text",
+  text : "4"
+},
+{type : "text",
+text : "5"
+},
       ]
       })
       request.post({
