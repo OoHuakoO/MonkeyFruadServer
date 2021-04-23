@@ -248,8 +248,8 @@ ${urlAccountNumber}`
   }
 
   if(message.startsWith("+")){
-    setTrueFalse = false
      if(BotReply.length === 0){
+      setTrueFalse = false
       let messageReply = message.replace("+","")
       BotReply.push({type : "text", text : 
 `${messageReply} 
