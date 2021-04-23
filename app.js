@@ -178,7 +178,7 @@ let textBot
 let BotReply = []
 let final = []
 let i = 0
-let setTrueFalse = true
+let setTrueFalse = false
 const getDb = await firestore.collection("Thief").orderBy("wanteedon","desc")
 await getDb.get().then(doc => {
     if(doc){
@@ -199,28 +199,27 @@ await getDb.get().then(doc => {
 }
   else {
     item.filter(res => {
-      if(message === "+" + res.nameSurnameAccount || message === "+" + res.nameSurname || message === "+" + res.account){
-        setTrueFalse = false
-      }
     if(message.startsWith("+")){
       
       let urlName = `https://monkeyfruad-54aff.web.app/thief/post/${res.data.name}%20${res.data.surname}`
       let urlAccountNumber = `https://monkeyfruad-54aff.web.app/thief/post/${res.data.accountnumber}`
 
       if(("+" + res.nameSurnameAccount).startsWith(message.toLowerCase())){
+        setTrueFalse = true
       BotReply.push({type : "text", text :
-      `${res.data.name} ${res.data.surname} 
-      มีประวัติการโกงในระบบ 
-      เลขที่บัญชี ${res.data.accountnumber} 
-      ธนาคาร ${res.data.bank} 
-      จำนวนครั้งที่โกง ${res.data.count} 
-      ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
-      วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")}
-      ${urlName}`
-          })
-          }
+`${res.data.name} ${res.data.surname} 
+มีประวัติการโกงในระบบ 
+เลขที่บัญชี ${res.data.accountnumber} 
+ธนาคาร ${res.data.bank} 
+จำนวนครั้งที่โกง ${res.data.count} 
+ครั้ง ยอดโกงทั้งหมด ${res.data.summoney} บาท 
+วันที่โกงล่าสุด ${moment(new Date(res.data.wanteedon.seconds * 1000)).format("lll")}
+${urlName}`
+})
+}
     
       else if(("+" + res.nameSurname).startsWith(message.toLowerCase())){
+        setTrueFalse = true
       BotReply.push({type : "text", text :  
 `${res.data.name} ${res.data.surname} 
 มีประวัติการโกงในระบบ 
@@ -230,6 +229,7 @@ ${urlName}`
       }
  
      else if(("+" + res.account).startsWith(message.toLowerCase())){
+      setTrueFalse = true
       BotReply.push({type : "text", text :  
 `เลขที่บัญชี ${res.data.accountnumber}
 มีประวัติการโกงในระบบ  
@@ -238,22 +238,27 @@ ${urlAccountNumber}`
 })
       }
 
+      if(message === "+" + res.nameSurnameAccount || message === "+" + res.nameSurname || message === "+" + res.account){
+        setTrueFalse = false
+      }
 }
 
   })
   }
 
   if(message.startsWith("+")){
+ 
      if(BotReply.length === 0){
       let messageReply = message.replace("+","")
       BotReply.push({type : "text", text : 
-  `${messageReply} 
-  ไม่มีประวัติการโกงในระบบ`
+`${messageReply} 
+ไม่มีประวัติการโกงในระบบ`
     })
   }
   }
 
   if(message === "ตรวจสอบคนโกง"){
+
     BotReply.push({type : "text" , text : 
 `พะโล้สามารถช่วยตรวจสอบความปลอดภัยของคุณได้
 
@@ -271,6 +276,7 @@ ${urlAccountNumber}`
 
 
   if(BotReply.length === 0){
+   
       BotReply.push({type : "text" , text : "พะโล้ไม่เข้าใจ พูดใหม่ได้มั้ย เจี๊ยก-"})
   }
 
