@@ -295,7 +295,7 @@ ${urlAccountNumber}`
       replyToken: tokenUser,
       messages: setTrueFalse ? [{type : "text",text : 
 `ไม่พบคนร้ายในระบบ พะโล้จึงคัด ${final.length} รายชื่อที่ใกล้เคียงมาให้คุณดู`},...final] : 
-{type : "text",text : [...final]}
+[...final]
       })
       request.post({
         url: 'https://api.line.me/v2/bot/message/reply',
