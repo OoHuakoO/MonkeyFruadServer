@@ -292,8 +292,9 @@ ${urlAccountNumber}`
 
     let body = JSON.stringify({
       replyToken: tokenUser,
-      messages: [setTrueFalse && {type : "text",text : 
-`ไม่พบคนร้ายในระบบ พะโล้จึงคัด ${final.length} รายชื่อที่ใกล้เคียงมาให้คุณดู`},...final]
+      messages: setTrueFalse ? [{type : "text",text : 
+`ไม่พบคนร้ายในระบบ พะโล้จึงคัด ${final.length} รายชื่อที่ใกล้เคียงมาให้คุณดู`},...final] : 
+{type : "text",text : [...final]}
       })
       request.post({
         url: 'https://api.line.me/v2/bot/message/reply',
