@@ -136,7 +136,7 @@ router.get("/post/:uid", async (req, res) => {
     let thiefid = req.params.uid;
     console.log(thiefid)
     let resultDropDown = []
-    var item = [];
+    var noob = [];
     if(thiefid.match(/[0-9]/g)){
       console.log("number")
       const orderbycount = await firestore
@@ -146,21 +146,23 @@ router.get("/post/:uid", async (req, res) => {
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           if (doc.exists) {
-            item.push(doc.data());
+            noob.push(doc.data());
           }
         });
       })
       .catch((err) => {
         console.log(err);
       });
-      item.filter(result =>{
+      noob.filter(result =>{
        if((result.accountnumber) === thiefid){
         resultDropDown.push(result)
        }
       })
+      console.log(resultDropDown)
       return res.json({
         item : resultDropDown
       })
+   
     }else {
       console.log("name surname")
       const orderbycount = await firestore
@@ -170,20 +172,20 @@ router.get("/post/:uid", async (req, res) => {
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           if (doc.exists) {
-            item.push(doc.data());
+            noob.push(doc.data());
           }
         });
       })
       .catch((err) => {
         console.log(err);
       });
-      item.filter(result =>{
+      noob.filter(result =>{
        if((result.name + " " + result.surname) === thiefid){
         console.log(result.name + " " + result.surname)
         resultDropDown.push(result)
        }
       })
-    
+      console.log(resultDropDown)
       return res.json({
         item : resultDropDown
       })
