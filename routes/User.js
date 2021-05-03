@@ -241,6 +241,7 @@ router.post("/edit/profile/:uid", uploadFile, async (req, res) => {
     let file = req.files.photo;
     let uid = req.params.uid;
     let item = [];
+    let item2 = [];
     var usernameExist = false;
     const { firstname, username, surname, sex, phone, province } = req.body;
     await firestore
@@ -249,107 +250,123 @@ router.post("/edit/profile/:uid", uploadFile, async (req, res) => {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
+          item2.push(doc.data());
+        });
+      });
+    await firestore
+      .collection("User")
+      .where("uid", "==", uid)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
           item.push(doc.data());
         });
       });
-    if (item[0] === undefined) {
-      usernameExist = false;
-      if (file) {
-        const resultfile = await cloudinary.uploader.upload(file[0].path);
-        const { url, public_id } = resultfile;
-        const photoURL = { url, public_id };
-        const showdata = await firestore
-          .collection("Post")
-          .where("useruid", "==", uid);
-        showdata.get().then((ok) => {
-          let item = [];
-          ok.forEach((doc) => {
-            item.push(doc.data());
+    if (item2[0].username !== username) {
+      if (item[0] === undefined) {
+        usernameExist = false;
+        if (file) {
+          const resultfile = await cloudinary.uploader.upload(file[0].path);
+          const { url, public_id } = resultfile;
+          const photoURL = { url, public_id };
+          const showdata = await firestore
+            .collection("Post")
+            .where("useruid", "==", uid);
+          showdata.get().then((ok) => {
+            let item = [];
+            ok.forEach((doc) => {
+              item.push(doc.data());
+            });
+            console.log(item);
+            item.forEach((kuay) => {
+              const findpost = firestore
+                .collection("Post")
+                .doc(kuay.uid)
+                .update({ username, photoURL });
+            });
           });
-          console.log(item);
-          item.forEach((kuay) => {
-            const findpost = firestore
-              .collection("Post")
-              .doc(kuay.uid)
-              .update({ username, photoURL });
-          });
-        });
 
-        const comment = await firestore
-          .collection("Comment")
-          .where("userid", "==", uid);
-        comment.get().then((ok) => {
-          let item = [];
-          ok.forEach((doc) => {
-            item.push(doc.data());
+          const comment = await firestore
+            .collection("Comment")
+            .where("userid", "==", uid);
+          comment.get().then((ok) => {
+            let item = [];
+            ok.forEach((doc) => {
+              item.push(doc.data());
+            });
+            console.log(item);
+            item.forEach((com) => {
+              const comment = firestore
+                .collection("Comment")
+                .doc(com.commentid)
+                .update({ username, photoURL });
+            });
           });
-          console.log(item);
-          item.forEach((com) => {
-            const comment = firestore
-              .collection("Comment")
-              .doc(com.commentid)
-              .update({ username, photoURL });
-          });
-        });
 
-        firestore.collection("User").doc(uid).update({
-          firstname,
-          username,
-          surname,
-          sex,
-          phone,
-          province,
-          photoURL,
-        });
-      } else if (!file) {
-        firestore.collection("User").doc(uid).update({
-          firstname,
-          username,
-          surname,
-          sex,
-          phone,
-          province,
-        });
+          firestore.collection("User").doc(uid).update({
+            firstname,
+            username,
+            surname,
+            sex,
+            phone,
+            province,
+            photoURL,
+          });
+        } else if (!file) {
+          firestore.collection("User").doc(uid).update({
+            firstname,
+            username,
+            surname,
+            sex,
+            phone,
+            province,
+          });
 
-        const showdata = await firestore
-          .collection("Post")
-          .where("useruid", "==", uid);
-        showdata.get().then((ok) => {
-          let item = [];
-          ok.forEach((doc) => {
-            item.push(doc.data());
+          const showdata = await firestore
+            .collection("Post")
+            .where("useruid", "==", uid);
+          showdata.get().then((ok) => {
+            let item = [];
+            ok.forEach((doc) => {
+              item.push(doc.data());
+            });
+            console.log(item);
+            item.forEach((kuay) => {
+              const findpost = firestore
+                .collection("Post")
+                .doc(kuay.uid)
+                .update({ username });
+            });
           });
-          console.log(item);
-          item.forEach((kuay) => {
-            const findpost = firestore
-              .collection("Post")
-              .doc(kuay.uid)
-              .update({ username });
-          });
-        });
 
-        const comment = await firestore
-          .collection("Comment")
-          .where("userid", "==", uid);
-        comment.get().then((ok) => {
-          let item = [];
-          ok.forEach((doc) => {
-            item.push(doc.data());
+          const comment = await firestore
+            .collection("Comment")
+            .where("userid", "==", uid);
+          comment.get().then((ok) => {
+            let item = [];
+            ok.forEach((doc) => {
+              item.push(doc.data());
+            });
+            console.log(item);
+            item.forEach((com) => {
+              const findpost = firestore
+                .collection("Comment")
+                .doc(com.commentid)
+                .update({ username });
+            });
           });
-          console.log(item);
-          item.forEach((com) => {
-            const findpost = firestore
-              .collection("Comment")
-              .doc(com.commentid)
-              .update({ username });
-          });
+        }
+        return res.json({
+          success: "แก้ไขสำเร็จ",
+          usernameExist: usernameExist,
+        });
+      } else if (item[0] !== undefined) {
+        usernameExist = true;
+        return res.json({
+          usernameExist: usernameExist,
         });
       }
-      return res.json({
-        success: "แก้ไขสำเร็จ",
-        usernameExist: usernameExist,
-      });
-    } else if (item[0] !== undefined) {
+    } else if (item2[0].username === username) {
       usernameExist = true;
       return res.json({
         usernameExist: usernameExist,
