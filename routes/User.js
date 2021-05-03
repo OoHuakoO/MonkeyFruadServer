@@ -133,6 +133,7 @@ router.post("/googlesignup", function (req, res) {
             phone: "-",
             province: "-",
             date: date,
+            login : 'google'
           });
           return res.json({ msg: "google signup success" });
         } else {
