@@ -250,7 +250,7 @@ router.post("/edit/profile/:uid", uploadFile, async (req, res) => {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          item2.push(doc.data());
+          item.push(doc.data());
         });
       });
     await firestore
@@ -259,7 +259,7 @@ router.post("/edit/profile/:uid", uploadFile, async (req, res) => {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          item.push(doc.data());
+          item2.push(doc.data());
         });
       });
     if (item2[0].username !== username) {
@@ -361,13 +361,14 @@ router.post("/edit/profile/:uid", uploadFile, async (req, res) => {
           usernameExist: usernameExist,
         });
       } else if (item[0] !== undefined) {
+        console.log("kuy")
         usernameExist = true;
         return res.json({
           usernameExist: usernameExist,
         });
       }
     } else if (item2[0].username === username) {
-      usernameExist = true;
+      usernameExist = false;
       return res.json({
         usernameExist: usernameExist,
       });
