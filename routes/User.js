@@ -133,7 +133,7 @@ router.post("/googlesignup", function (req, res) {
             phone: "-",
             province: "-",
             date: date,
-            login : 'google'
+            login: "google",
           });
           return res.json({ msg: "google signup success" });
         } else {
@@ -240,103 +240,121 @@ router.post("/edit/profile/:uid", uploadFile, async (req, res) => {
   try {
     let file = req.files.photo;
     let uid = req.params.uid;
-
+    let item = [];
+    var usernameExist = false;
     const { firstname, username, surname, sex, phone, province } = req.body;
-    if (file) {
-      const resultfile = await cloudinary.uploader.upload(file[0].path);
-      const { url, public_id } = resultfile;
-      const photoURL = { url, public_id };
-
-      const showdata = await firestore
-        .collection("Post")
-        .where("useruid", "==", uid);
-      showdata.get().then((ok) => {
-        let item = [];
-        ok.forEach((doc) => {
+    await firestore
+      .collection("User")
+      .where("username", "==", username)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
           item.push(doc.data());
         });
-        console.log(item);
-        item.forEach((kuay) => {
-          const findpost = firestore
-            .collection("Post")
-            .doc(kuay.uid)
-            .update({ username, photoURL });
-        });
       });
+    if (item[0] === undefined) {
+      usernameExist = false;
+      if (file) {
+        const resultfile = await cloudinary.uploader.upload(file[0].path);
+        const { url, public_id } = resultfile;
+        const photoURL = { url, public_id };
+        const showdata = await firestore
+          .collection("Post")
+          .where("useruid", "==", uid);
+        showdata.get().then((ok) => {
+          let item = [];
+          ok.forEach((doc) => {
+            item.push(doc.data());
+          });
+          console.log(item);
+          item.forEach((kuay) => {
+            const findpost = firestore
+              .collection("Post")
+              .doc(kuay.uid)
+              .update({ username, photoURL });
+          });
+        });
 
-      const comment = await firestore
-        .collection("Comment")
-        .where("userid", "==", uid);
-      comment.get().then((ok) => {
-        let item = [];
-        ok.forEach((doc) => {
-          item.push(doc.data());
+        const comment = await firestore
+          .collection("Comment")
+          .where("userid", "==", uid);
+        comment.get().then((ok) => {
+          let item = [];
+          ok.forEach((doc) => {
+            item.push(doc.data());
+          });
+          console.log(item);
+          item.forEach((com) => {
+            const comment = firestore
+              .collection("Comment")
+              .doc(com.commentid)
+              .update({ username, photoURL });
+          });
         });
-        console.log(item);
-        item.forEach((com) => {
-          const comment = firestore
-            .collection("Comment")
-            .doc(com.commentid)
-            .update({ username, photoURL });
-        });
-      });
 
-      firestore.collection("User").doc(uid).update({
-        firstname,
-        username,
-        surname,
-        sex,
-        phone,
-        province,
-        photoURL,
-      });
-    } else if (!file) {
-      firestore.collection("User").doc(uid).update({
-        firstname,
-        username,
-        surname,
-        sex,
-        phone,
-        province,
-      });
+        firestore.collection("User").doc(uid).update({
+          firstname,
+          username,
+          surname,
+          sex,
+          phone,
+          province,
+          photoURL,
+        });
+      } else if (!file) {
+        firestore.collection("User").doc(uid).update({
+          firstname,
+          username,
+          surname,
+          sex,
+          phone,
+          province,
+        });
 
-      const showdata = await firestore
-        .collection("Post")
-        .where("useruid", "==", uid);
-      showdata.get().then((ok) => {
-        let item = [];
-        ok.forEach((doc) => {
-          item.push(doc.data());
+        const showdata = await firestore
+          .collection("Post")
+          .where("useruid", "==", uid);
+        showdata.get().then((ok) => {
+          let item = [];
+          ok.forEach((doc) => {
+            item.push(doc.data());
+          });
+          console.log(item);
+          item.forEach((kuay) => {
+            const findpost = firestore
+              .collection("Post")
+              .doc(kuay.uid)
+              .update({ username });
+          });
         });
-        console.log(item);
-        item.forEach((kuay) => {
-          const findpost = firestore
-            .collection("Post")
-            .doc(kuay.uid)
-            .update({ username });
-        });
-      });
 
-      const comment = await firestore
-        .collection("Comment")
-        .where("userid", "==", uid);
-      comment.get().then((ok) => {
-        let item = [];
-        ok.forEach((doc) => {
-          item.push(doc.data());
+        const comment = await firestore
+          .collection("Comment")
+          .where("userid", "==", uid);
+        comment.get().then((ok) => {
+          let item = [];
+          ok.forEach((doc) => {
+            item.push(doc.data());
+          });
+          console.log(item);
+          item.forEach((com) => {
+            const findpost = firestore
+              .collection("Comment")
+              .doc(com.commentid)
+              .update({ username });
+          });
         });
-        console.log(item);
-        item.forEach((com) => {
-          const findpost = firestore
-            .collection("Comment")
-            .doc(com.commentid)
-            .update({ username });
-        });
+      }
+      return res.json({
+        success: "แก้ไขสำเร็จ",
+        usernameExist: usernameExist,
+      });
+    } else if (item[0] !== undefined) {
+      usernameExist = true;
+      return res.json({
+        usernameExist: usernameExist,
       });
     }
-    return res.json({
-      success: "แก้ไขสำเร็จ",
-    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ msg: err });
@@ -386,7 +404,7 @@ router.get("/listuserofday", async (req, res) => {
   try {
     var data = [];
     var date = new Date();
-    var last6day = new Date(Date.now() - (6 * 24 * 60 * 60 * 1000))
+    var last6day = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
     const listUser = await firestore
       .collection("User")
       .where("date", ">=", last6day)
@@ -407,7 +425,7 @@ router.get("/listuserofmonth", async (req, res) => {
   try {
     var data = [];
     var date = new Date();
-    var last29day = new Date(Date.now() - (29 * 24 * 60 * 60 * 1000))
+    var last29day = new Date(Date.now() - 29 * 24 * 60 * 60 * 1000);
     const listUser = await firestore
       .collection("User")
       .where("date", ">=", last29day)
